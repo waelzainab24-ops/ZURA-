@@ -1,0 +1,40 @@
+#define VIB_PIN 4      
+#define BUTTON_PIN 33  
+
+const int freq = 5000;       
+const int resolution = 8;    
+
+int pressCount = 0;          
+bool lastButtonState = HIGH; 
+
+void setup() {
+  ledcAttach(VIB_PIN, freq, resolution);
+  pinMode(BUTTON_PIN, INPUT_PULLUP);
+  ledcWrite(VIB_PIN, 0); 
+}
+
+void loop() {
+  bool currentButtonState = digitalRead(BUTTON_PIN);
+  
+  if (lastButtonState == HIGH && currentButtonState == LOW) {
+    delay(50); 
+    
+    pressCount++; 
+    
+    if (pressCount == 1) {
+      ledcWrite(VIB_PIN, 42);  
+    } 
+    else if (pressCount == 2) {
+      ledcWrite(VIB_PIN, 56);  
+    } 
+    else if (pressCount == 3) {
+      ledcWrite(VIB_PIN, 70);  
+    } 
+    else if (pressCount == 4) {
+      ledcWrite(VIB_PIN, 0);   
+      pressCount = 0;          
+    }
+  }
+  
+  lastButtonState = currentButtonState;
+}
